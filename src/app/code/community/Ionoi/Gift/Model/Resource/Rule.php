@@ -344,7 +344,7 @@ class Ionoi_Gift_Model_Resource_Rule extends Mage_Rule_Model_Resource_Abstract
      *
      * @return Mage_Rule_Model_Resource_Abstract
      */
-    public function bindRuleToEntity($ruleIds, $entityIds, $entityType)
+    public function bindRuleToEntity($ruleIds, $entityIds, $entityType, $deleteOldResults = true)
     {
         if (empty($ruleIds)) {
             return $this;
