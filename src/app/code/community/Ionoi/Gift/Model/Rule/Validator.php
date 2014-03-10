@@ -194,6 +194,7 @@ class Ionoi_Gift_Model_Rule_Validator extends Mage_Core_Model_Abstract
                     // set price
                     $item->setCustomPrice(0);
                     $item->setOriginalCustomPrice(0);
+                    $item->setQty($rule->getQty());
                     $item->getProduct()->setIsSuperMode(true);
                     // set messages
                     if (strlen($rule->getStoreLabel($address->getQuote()->getStore())) > 0) {
