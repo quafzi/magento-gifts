@@ -102,6 +102,18 @@ class Ionoi_Gift_Block_Adminhtml_Promo_Gift_Grid extends Mage_Adminhtml_Block_Wi
             ));
         }
 
+        if (!Mage::app()->isSingleStoreMode()) {
+            $this->addColumn('rule_store', array(
+                'header'    => Mage::helper('salesrule')->__('Store'),
+                'align'     =>'left',
+                'index'     => 'store_ids',
+                'type'      => 'options',
+                'sortable'  => false,
+                'options'   => Mage::getSingleton('adminhtml/system_store')->getStoreOptionHash(),
+                'width'     => 200,
+            ));
+        }
+
         $this->addColumn('sort_order', array(
             'header'    => Mage::helper('salesrule')->__('Priority'),
             'align'     => 'right',

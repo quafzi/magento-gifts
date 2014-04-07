@@ -22,6 +22,11 @@ class Ionoi_Gift_Model_Resource_Rule_Collection extends
             'rule_id_field' => 'rule_id',
             'entity_id_field' => 'website_id'
         ),
+        'store' => array(
+            'associations_table' => 'gift/store',
+            'rule_id_field' => 'rule_id',
+            'entity_id_field' => 'store_id'
+        ),
         'customer_group' => array(
             'associations_table' => 'gift/customer_group',
             'rule_id_field' => 'rule_id',
@@ -155,6 +160,51 @@ class Ionoi_Gift_Model_Resource_Rule_Collection extends
         $this->getSelect()->where(sprintf('(%s OR %s)', $cCond, $aCond), null,
             Varien_Db_Select::TYPE_CONDITION);
         
+        return $this;
+    }
+
+    /**
+     * Provide support for store id filter
+     *
+     * @param string $field
+     * @param mixed $condition
+     *
+     * @return Mage_Rule_Model_Resource_Rule_Collection_Abstract
+     */
+    public function addFieldToFilter($field, $condition = null)
+    {
+        if ($field == 'store_ids') {
+            return $this->addStoreFilter($condition);
+        }
+
+        parent::addFieldToFilter($field, $condition);
+        return $this;
+    }
+
+    /**
+     * Limit rules collection by specific stores
+     *
+     * @param int|array|Mage_Core_Model_Store $storeId
+     *
+     * @return Mage_Rule_Model_Resource_Rule_Collection_Abstract
+     */
+    public function addStoreFilter($storeId)
+    {
+        $entityInfo = $this->_getAssociatedEntityInfo('store');
+        if (!$this->getFlag('is_store_table_joined')) {
+            $this->setFlag('is_store_table_joined', true);
+            if ($storeId instanceof Mage_Core_Model_Store) {
+                $storeId = $storeId->getId();
+            }
+
+            $subSelect = $this->getConnection()->select()
+                ->from(array('store' => $this->getTable($entityInfo['associations_table'])), '')
+                ->where('store.' . $entityInfo['entity_id_field'] . ' IN (?)', $storeId);
+            $this->getSelect()->exists(
+                $subSelect,
+                'main_table.' . $entityInfo['rule_id_field'] . ' = store.' . $entityInfo['rule_id_field']
+            );
+        }
         return $this;
     }
 }

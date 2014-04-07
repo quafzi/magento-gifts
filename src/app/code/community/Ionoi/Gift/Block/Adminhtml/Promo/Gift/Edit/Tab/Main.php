@@ -129,6 +129,29 @@ Mage_Adminhtml_Block_Widget_Tab_Interface
             $renderer = $this->getLayout()->createBlock('adminhtml/store_switcher_form_renderer_fieldset_element');
             $field->setRenderer($renderer);
         }
+
+        if (Mage::app()->isSingleStoreMode()) {
+            $storeId = Mage::app()->getStore(true)->getStoreId();
+            $fieldset->addField('store_ids',
+                'hidden',
+                array(
+                    'name' => 'rule[store_ids][]',
+                    'value' => $websiteId
+                ));
+            $model->setStoreIds($storeId);
+        } else {
+            $field = $fieldset->addField('store_ids',
+                'multiselect',
+                array(
+                    'name' => 'rule[store_ids][]',
+                    'label' => Mage::helper('salesrule')->__('Stores'),
+                    'title' => Mage::helper('salesrule')->__('Stores'),
+                    'required' => true,
+                    'values' => Mage::getSingleton('adminhtml/system_store')->getStoreValuesForForm()
+                ));
+            $renderer = $this->getLayout()->createBlock('adminhtml/store_switcher_form_renderer_fieldset_element');
+            $field->setRenderer($renderer);
+        }
         
         $customerGroups = Mage::getResourceModel('customer/group_collection')->load()->toOptionArray();
         $found = false;

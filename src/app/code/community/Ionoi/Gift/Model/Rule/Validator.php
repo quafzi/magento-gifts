@@ -154,6 +154,12 @@ class Ionoi_Gift_Model_Rule_Validator extends Mage_Core_Model_Abstract
                  !$this->_canProcessRule($rule, $address)) {
                 continue;
             }
+
+            //Check if rule can be applied in this store
+            if (false === in_array(Mage::app()->getStore()->getId(), $rule->getStoreIds())) {
+                continue;
+            }
+
             if ($rule->hasCouponCode()) {
                 if ($address->getQuote()->getCouponCode() != $rule->getCouponCode()) {
                     continue;

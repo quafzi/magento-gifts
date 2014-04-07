@@ -20,6 +20,11 @@ class Ionoi_Gift_Model_Resource_Rule extends Mage_Rule_Model_Resource_Abstract
             'rule_id_field' => 'rule_id',
             'entity_id_field' => 'website_id'
         ),
+        'store' => array(
+            'associations_table' => 'gift/store',
+            'rule_id_field' => 'rule_id',
+            'entity_id_field' => 'store_id'
+        ),
         'customer_group' => array(
             'associations_table' => 'gift/customer_group',
             'rule_id_field' => 'rule_id',
@@ -53,6 +58,8 @@ class Ionoi_Gift_Model_Resource_Rule extends Mage_Rule_Model_Resource_Abstract
             (array) $this->getCustomerGroupIds($object->getId()));
         $object->setData('website_ids',
             (array) $this->getWebsiteIds($object->getId()));
+        $object->setData('store_ids',
+            (array) $this->getStoreIds($object->getId()));
         $object->setData('product_ids',
             (array) $this->getProductIds($object->getId()));
         
@@ -92,6 +99,14 @@ class Ionoi_Gift_Model_Resource_Rule extends Mage_Rule_Model_Resource_Abstract
                 $websiteIds = explode(',', (string) $websiteIds);
             }
             $this->bindRuleToEntity($object->getId(), $websiteIds, 'website');
+        }
+
+        if ($object->hasStoreIds()) {
+            $storeIds = $object->getStoreIds();
+            if (!is_array($storeIds)) {
+                $storeIds = explode(',', (string) $storeIds);
+            }
+            $this->bindRuleToEntity($object->getId(), $storeIds, 'store');
         }
         
         if ($object->hasCustomerGroupIds()) {
@@ -417,5 +432,16 @@ class Ionoi_Gift_Model_Resource_Rule extends Mage_Rule_Model_Resource_Abstract
         $adapter->commit();
         
         return $this;
+    }
+
+    /**
+     * Retrieve store ids of specified rule
+     *
+     * @param int $ruleId
+     * @return array
+     */
+    public function getStoreIds($ruleId)
+    {
+        return $this->getAssociatedEntityIds($ruleId, 'store');
     }
 }
